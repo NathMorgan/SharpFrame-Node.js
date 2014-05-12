@@ -1,5 +1,16 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+    .jumbotron
+        h1 SharpFrame
+        p.lead
+            | Welcome to SharpFrame - Watch videos from people from all over the world in just your browser.
+            | SharpFrame allows for real time playback of video to anyone and also allows you to chat to
+            | other people in real time. SharpFrame is completely free so why not register and enjoy the
+            | benefits of modern media today.
+            p
+                a.btn.btn-lg.btn-success(href='/register', role='button') Register today
+
+        .videoRow
+            .videoBox
+                atricle Tuqiri's Test room of test things that should be tested.
