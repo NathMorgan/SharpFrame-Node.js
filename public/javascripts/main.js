@@ -25,8 +25,6 @@ $(document).ready(function(){
         pageArray.push($("#" + $("head title").text().toLowerCase()));
         startOfArray = pageArray.length - 1;
 
-        console.log($(pageArray[startOfArray]).find("a").attr('href'));
-
         //Checking to see if the users browser supports html5 history
         if(!History.enabled){
             alert("This site works better on a browser that supports HTML5. Please upgrade to get the best content.");
@@ -36,14 +34,13 @@ $(document).ready(function(){
         //Adding the first landed page to the web browsers history
         history.pushState({}, pageArray[startOfArray].attr('id'), $(pageArray[startOfArray]).find("a").attr('href'));
 
-        $.when($.get('/'), $.get('/search'), $.get('/about'), $.get('/register'), $.get('/login'))
-            .done(function(home, search, about,register, login){
+        $.when($.get('/'), $.get('/search'), $.get('/about'), $.get('/register'))
+            .done(function(home, search, about,register){
                 //Caching the other html pages for increased speeds
                 pages.push({Name: "home", HTML: $(home[0]).find("main").html()});
                 pages.push({Name: "search", HTML: $(search[0]).find("main").html()});
                 pages.push({Name: "about", HTML: $(about[0]).find("main").html()});
                 pages.push({Name: "register", HTML: $(register[0]).find("main").html()});
-                pages.push({Name: "login", HTML: $(login[0]).find("main").html()});
         });
 
         $.getJSON('/rooms/getrooms', function(roomsarray){
