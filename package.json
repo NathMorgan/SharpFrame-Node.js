@@ -10,6 +10,6 @@
     "jade": "*",
     "less-middleware": "~0.1.15",
     "mongodb": "*",
-    "mongoskin": "*"
+    "monk": "*"
   }
 }
