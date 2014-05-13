@@ -9,6 +9,9 @@ $(document).ready(function(){
     //Creating an array that will store the projects
     var projects = [];
 
+    //Creating an array to store the rooms
+    var rooms = [];
+
     var startOfArray;
 
     var supportshtml5 = true;
@@ -22,6 +25,8 @@ $(document).ready(function(){
         pageArray.push($("#" + $("head title").text().toLowerCase()));
         startOfArray = pageArray.length - 1;
 
+        console.log($(pageArray[startOfArray]).find("a").attr('href'));
+
         //Checking to see if the users browser supports html5 history
         if(!History.enabled){
             alert("This site works better on a browser that supports HTML5. Please upgrade to get the best content.");
@@ -29,17 +34,21 @@ $(document).ready(function(){
         }
 
         //Adding the first landed page to the web browsers history
-        History.pushState({}, pageArray[startOfArray].attr('id'), $(pageArray[startOfArray]).find("a").attr('href'));
+        history.pushState({}, pageArray[startOfArray].attr('id'), $(pageArray[startOfArray]).find("a").attr('href'));
 
-        $.when($.get('/'), $.get('/search'), $.get('/about'), $.get('/register'), $.get('/login')).done(function(home, search, about,
-                                                                                                                 register, login){
-            //Caching the other html pages for increased speeds
-            pages.push({Name: "home", HTML: $(home[0]).find("main").html()});
-            pages.push({Name: "search", HTML: $(search[0]).find("main").html()});
-            pages.push({Name: "about", HTML: $(about[0]).find("main").html()});
-            pages.push({Name: "register", HTML: $(register[0]).find("main").html()});
-            pages.push({Name: "login", HTML: $(login[0]).find("main").html()});
+        $.when($.get('/'), $.get('/search'), $.get('/about'), $.get('/register'), $.get('/login'))
+            .done(function(home, search, about,register, login){
+                //Caching the other html pages for increased speeds
+                pages.push({Name: "home", HTML: $(home[0]).find("main").html()});
+                pages.push({Name: "search", HTML: $(search[0]).find("main").html()});
+                pages.push({Name: "about", HTML: $(about[0]).find("main").html()});
+                pages.push({Name: "register", HTML: $(register[0]).find("main").html()});
+                pages.push({Name: "login", HTML: $(login[0]).find("main").html()});
+        });
 
+        $.getJSON('/rooms/getrooms', function(roomsarray){
+            rooms = roomsarray;
+            displayRooms();
         });
     }
 
@@ -55,16 +64,14 @@ $(document).ready(function(){
             return false;
 
         //Changing the CSS of the current navigation text to default
-        //pageArray[startOfArray].css({"color" : "#4d4d4d"});
-        //pageArray[startOfArray].css({"cursor" : "pointer"});
+        pageArray[startOfArray].removeClass("active");
 
         //Adding the new clicked page to the array
         pageArray.push($(this));
         startOfArray = startOfArray + 1;
 
         //Changing the CSS of the clicked navigation to being clicked
-        //pageArray[startOfArray].css({"color" : "darkblue"});
-        //pageArray[startOfArray].css({"cursor" : "auto"});
+        pageArray[startOfArray].addClass("active");
 
         //Getting the html of the page that is selected, animating it and then storing the page
         //in the web browsers history
@@ -72,10 +79,18 @@ $(document).ready(function(){
         pages.forEach(function(page){
             if(page.Name == pageArray[startOfArray].attr('id')){
                 $("main").html(page.HTML);
+
+                if(page.Name == "home"){
+                    displayRooms();
+                }
             }
         });
         history.pushState({}, pageArray[startOfArray].attr('id'), $(pageArray[startOfArray]).find("a").attr('href'));
 
+    });
+
+    $(".videoRow").on("click", ".videoBox", function(){
+        history.pushState({}, "room", "/room/view/" + $(this).attr('id'));
     });
 
     //This bind gets fired when there is a history change such as going forward or backwards in the history
@@ -83,17 +98,34 @@ $(document).ready(function(){
         //Getting the history state
         var state = History.getState();
 
-        //Shortening the link down from http://tuqiri.net/example to /example
-        var link = /[^/]*$/.exec(state.url)[0];
-
-        $.get("/" + link, function(data) {
+        $.get(state.hash, function(data) {
             $("main").html($(data).find("main").html());
+
+            //If the page is the homepage re-add the room content
+            if(state.hash == "/"){
+                displayRooms();
+            }
         });
 
         //Removing the last page from the array
         pageArray.shift();
         startOfArray = startOfArray - 1;
     });
-});
 
+
+    function displayRooms(){
+        var roomhtml = "";
+
+        rooms.forEach(function(room){
+            roomhtml += '<div class="videoBox" id="' + room._id + '">';
+            roomhtml += '<article>';
+            roomhtml += '<h4>' + room.title + '</h4>';
+            roomhtml += '<img src="/images/icons/' + room.icon + '" />';
+            roomhtml += '</article>';
+            roomhtml += '</div>';
+        });
+
+        $(".videoRow").html(roomhtml);
+    }
+});
 
