@@ -9,23 +9,25 @@ html(lang='en')
         link(href='/stylesheets/bootstrap/bootstrap.css', rel='stylesheet')
         link(href='/stylesheets/style.css', rel='stylesheet')
         style(type='text/css')
-
+        title= title
     body
         .container
             .masthead
                 #sharpframelogo
                     img(src="/images/sharpframe.png")
                 ul.nav.nav-justified
-                    li.active
+                    li.active.nav-link#home
                         a(href='/') Home
-                    li
+                    li.nav-link#search
                         a(href='/search') Search
-                    li
-                        a(href='/popular') Popular
-                    li
+                    li.nav-link#about
+                        a(href='/about') About
+                    li.nav-link#register
                         a(href='/register') Register
-            main
-                block content
+            block content
 
             .footer
                 p © Company 2014
+        script(src='//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js')
+        script(src='/javascripts/history.js')
+        script(src='/javascripts/main.js')
