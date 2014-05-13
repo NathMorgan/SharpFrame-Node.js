@@ -4,7 +4,15 @@
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'Home' });
+};
+
+/*
+ * GET about page.
+ */
+
+exports.about = function(req, res){
+    res.render('about', { title: 'About' });
 };
 
 /*
@@ -12,5 +20,5 @@ exports.index = function(req, res){
  */
 
 exports.search = function(req, res){
-    res.render('index', { title: 'Search' });
+    res.render('search', { title: 'Search' });
 };

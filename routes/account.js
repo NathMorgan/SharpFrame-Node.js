@@ -3,7 +3,7 @@
  */
 
 exports.register = function(req, res){
-    res.render('index', { title: 'Register' });
+    res.render('register', { title: 'Register' });
 };
 
 /*
@@ -11,7 +11,7 @@ exports.register = function(req, res){
  */
 
 exports.login = function(req, res){
-    res.render('index', { title: 'Login' });
+    res.render('login', { title: 'Login' });
 };
 
 /*
@@ -19,5 +19,5 @@ exports.login = function(req, res){
  */
 
 exports.logout = function(req, res){
-    res.render('index', { title: 'Logout' });
+    res.render('logout', { title: 'Logout' });
 };
