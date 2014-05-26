@@ -9,6 +9,7 @@ var account = require('./routes/account');
 var room = require('./routes/room');
 var http = require('http');
 var path = require('path');
+var robots = require('robots.txt')
 
 var app = express();
 
@@ -28,6 +29,7 @@ app.use(app.router);
 app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.bodyParser());
+app.use(robots(__dirname + '/robots.txt'))
 
 // development only
 if ('development' == app.get('env')) {
