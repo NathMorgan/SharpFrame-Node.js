@@ -27,28 +27,22 @@ app.use(express.session());
 app.use(app.router);
 app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-var mongo = require('mongoskin');
-var db = mongo.db("mongodb://localhost/SharpFrame", {native_parser:true});
+app.use(express.bodyParser());
 
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-// Make the database accessible to the router
-app.use(function(req,res,next){
-    req.db = db;
-    next();
-});
-
 app.get('/', routes.index);
 app.get('/search', routes.search);
 app.get('/about', routes.about);
-app.get('/register', account.register);
-app.get('/login', account.login);
+app.get('/register', account.getRegister);
+app.post('/register', account.postRegister);
+app.post('/login', account.login);
 app.get('/logout', account.logout);
-app.get('/getrooms', room.getrooms);
+app.get('/rooms/getrooms', room.getrooms);
+app.get('/rooms/view/:id', room.view);
 
 http.createServer(app).listen(app.get('port'), app.get('domain'), function(){
     console.log('Express server listening on port ' + app.get('port'));
