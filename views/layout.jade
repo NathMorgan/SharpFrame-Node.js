@@ -15,8 +15,13 @@ html(lang='en')
             .masthead
                 #sharpframelogo
                     img(src="/images/sharpframe.png")
-                ul.nav.nav-justified
-                    li.active.nav-link#home
+                    form.navbar-form.pull-right(action="/login", method="POST")
+                        input.span2(type='text', id="username", name="username", placeholder='Username')
+                        input.span2(type='password', id="password", name="password", placeholder='Password')
+                        input.btn(type='submit', value='Login')
+                    .clrfloats
+            ul.nav.nav-justified.buttonnav
+                    li.nav-link#home
                         a(href='/') Home
                     li.nav-link#search
                         a(href='/search') Search
@@ -27,7 +32,8 @@ html(lang='en')
             block content
 
             .footer
-                p © Company 2014
+                .container
+                    | test
         script(src='//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js')
         script(src='/javascripts/history.js')
         script(src='/javascripts/main.js')
