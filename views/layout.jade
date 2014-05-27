@@ -15,11 +15,12 @@ html(lang='en')
             .masthead
                 #sharpframelogo
                     img(src="/images/sharpframe.png")
-                    form.navbar-form.pull-right(action="/login", method="POST")
-                        input.span2(type='text', id="username", name="username", placeholder='Username')
-                        input.span2(type='password', id="password", name="password", placeholder='Password')
+                    form.navbar-form.navbar-right(action="/login", method="POST")
+                        .form-group
+                            input.form-control(type='text', id="username", name="username", placeholder='Username')
+                        .form-group
+                            input.form-control(type='password', id="password", name="password", placeholder='Password')
                         input.btn(type='submit', value='Login')
-                    .clrfloats
             ul.nav.nav-justified.buttonnav
                     li.nav-link#home
                         a(href='/') Home
@@ -33,7 +34,6 @@ html(lang='en')
 
             .footer
                 .container
-                    | test
         script(src='//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js')
         script(src='/javascripts/history.js')
         script(src='/javascripts/main.js')
