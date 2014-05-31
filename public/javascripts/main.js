@@ -31,8 +31,10 @@ $(document).ready(function(){
             supportshtml5 = false;
         }
 
+        $("#" + pageArray[startOfArray].attr('id')).addClass("active");
+
         //Adding the first landed page to the web browsers history
-        history.pushState({}, pageArray[startOfArray].attr('id'), $(pageArray[startOfArray]).find("a").attr('href'));
+        History.pushState({}, pageArray[startOfArray].attr('id'), $(pageArray[startOfArray]).find("a").attr('href'));
 
         $.when($.get('/'), $.get('/search'), $.get('/about'), $.get('/register'))
             .done(function(home, search, about,register){
@@ -82,16 +84,18 @@ $(document).ready(function(){
                 }
             }
         });
-        history.pushState({}, pageArray[startOfArray].attr('id'), $(pageArray[startOfArray]).find("a").attr('href'));
+
+        History.pushState({}, pageArray[startOfArray].attr('id'), $(pageArray[startOfArray]).find("a").attr('href'));
 
     });
 
     $(".videoRow").on("click", ".videoBox", function(){
-        history.pushState({}, "room", "/room/view/" + $(this).attr('id'));
+
     });
 
     //This bind gets fired when there is a history change such as going forward or backwards in the history
     History.Adapter.bind(window,'statechange',function() {
+
         //Getting the history state
         var state = History.getState();
 
@@ -107,6 +111,10 @@ $(document).ready(function(){
         //Removing the last page from the array
         pageArray.shift();
         startOfArray = startOfArray - 1;
+
+        //Changing the navigation select classes
+        $(".buttonnav li").removeClass("active");
+        $("#" + state.title).addClass("active");
     });
 
 
@@ -124,5 +132,34 @@ $(document).ready(function(){
 
         $(".videoRow").html(roomhtml);
     }
+
+    $('.input-group input[required], .input-group textarea[required], .input-group select[required]').on('keyup, change', function() {
+        var $group = $(this).closest('.input-group'),
+            $addon = $group.find('.input-group-addon'),
+            $icon = $addon.find('span'),
+            state = false;
+
+        if (!$group.data('validate')) {
+            state = $(this).val() ? true : false;
+        }else if ($group.data('validate') == "email") {
+            state = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test($(this).val())
+        }else if($group.data('validate') == 'phone') {
+            state = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/.test($(this).val())
+        }else if ($group.data('validate') == "length") {
+            state = $(this).val().length >= $group.data('length') ? true : false;
+        }else if ($group.data('validate') == "number") {
+            state = !isNaN(parseFloat($(this).val())) && isFinite($(this).val());
+        }
+
+        if (state) {
+            $addon.removeClass('danger');
+            $addon.addClass('success');
+            $icon.attr('class', 'glyphicon glyphicon-ok');
+        }else{
+            $addon.removeClass('success');
+            $addon.addClass('danger');
+            $icon.attr('class', 'glyphicon glyphicon-remove');
+        }
+    });
 });
 
