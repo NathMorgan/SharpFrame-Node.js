@@ -4,9 +4,9 @@
  */
 
 var express = require('express');
-var routes = require('./routes');
-var account = require('./routes/account');
-var room = require('./routes/room');
+var index = require('./routes/indexController');
+var account = require('./routes/accountController');
+var room = require('./routes/roomController');
 var http = require('http');
 var path = require('path');
 var robots = require('robots.txt')
@@ -36,9 +36,9 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
-app.get('/search', routes.search);
-app.get('/about', routes.about);
+app.get('/', index.index);
+app.get('/search', index.search);
+app.get('/about', index.about);
 app.get('/register', account.getRegister);
 app.post('/register', account.postRegister);
 app.post('/login', account.login);
