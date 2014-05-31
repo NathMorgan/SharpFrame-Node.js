@@ -15,7 +15,7 @@ exports.register = function(req, res){
  */
 
 exports.view = function(req, res){
-    res.render('room-view', { title: 'Welcome to x' });
+    res.render('room-view', { title: 'Welcome to ' + req.params.id });
 };
 
 /*
