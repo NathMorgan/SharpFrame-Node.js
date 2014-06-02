@@ -89,8 +89,8 @@ $(document).ready(function(){
 
     });
 
-    $(".videoRow").on("click", ".videoBox", function(){
-
+    $(".videoRow").on("click", ".videoBox", function(event){
+        alert($(this).attr("id"));
     });
 
     //This bind gets fired when there is a history change such as going forward or backwards in the history
@@ -99,12 +99,16 @@ $(document).ready(function(){
         //Getting the history state
         var state = History.getState();
 
-        $.get(state.hash, function(data) {
-            $("main").html($(data).find("main").html());
+        //Getting the html of the page that is selected, animating it and then storing the page
+        //in the web browsers history
 
-            //If the page is the homepage re-add the room content
-            if(state.hash == "/"){
-                displayRooms();
+        pages.forEach(function(page){
+            if(page.Name == state.title){
+                $("main").html(page.HTML);
+
+                if(page.Name == "home"){
+                    displayRooms();
+                }
             }
         });
 
@@ -149,16 +153,16 @@ $(document).ready(function(){
             state = $(this).val().length >= $group.data('length') ? true : false;
         }else if ($group.data('validate') == "number") {
             state = !isNaN(parseFloat($(this).val())) && isFinite($(this).val());
+        }else if ($group.data('validate') == "date") {
+            state = /^\d{4}-\d{1,2}-\d{1,2}$/.test($(this).val())
         }
 
         if (state) {
             $addon.removeClass('danger');
             $addon.addClass('success');
-            $icon.attr('class', 'glyphicon glyphicon-ok');
         }else{
             $addon.removeClass('success');
             $addon.addClass('danger');
-            $icon.attr('class', 'glyphicon glyphicon-remove');
         }
     });
 });
