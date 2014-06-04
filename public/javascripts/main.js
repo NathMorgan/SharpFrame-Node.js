@@ -18,11 +18,17 @@ $(document).ready(function(){
 
     var History = window.History;
 
+    var player;
+
+    var socket;
+
+    var totaltime;
+
     initialize();
 
     function initialize(){
         //Adding the first value to the page array of where the user landed on the site
-        pageArray.push($("#" + $("head title").text().toLowerCase()));
+        pageArray.push($("head title").text().toLowerCase());
         startOfArray = pageArray.length - 1;
 
         //Checking to see if the users browser supports html5 history
@@ -31,10 +37,8 @@ $(document).ready(function(){
             supportshtml5 = false;
         }
 
-        $("#" + pageArray[startOfArray].attr('id')).addClass("active");
-
         //Adding the first landed page to the web browsers history
-        History.pushState({}, pageArray[startOfArray].attr('id'), $(pageArray[startOfArray]).find("a").attr('href'));
+        History.pushState({}, pageArray[startOfArray], $("#" + pageArray[startOfArray]).find("a").attr('href'));
 
         $.when($.get('/'), $.get('/search'), $.get('/about'), $.get('/register'))
             .done(function(home, search, about,register){
@@ -47,8 +51,14 @@ $(document).ready(function(){
 
         $.getJSON('/rooms/getrooms', function(roomsarray){
             rooms = roomsarray;
-            displayRooms();
+
+            if(pageArray[startOfArray] == "room")
+                loadVideo();
+            else if(pageArray[startOfArray] == "home")
+                displayRooms();
         });
+
+        $("#" + pageArray[startOfArray]).addClass("active");
     }
 
     $(".nav-link").click(function(event){
@@ -59,24 +69,24 @@ $(document).ready(function(){
 
         //Checking to see if the clicked link is the currently displayed one preventing from it loading a page
         // that is already loaded
-        if($(this).attr('id') == pageArray[startOfArray].attr('id'))
+        if($(this).attr('id') == pageArray[startOfArray])
             return false;
 
         //Changing the CSS of the current navigation text to default
-        pageArray[startOfArray].removeClass("active");
+        $("#" + pageArray[startOfArray]).removeClass("active");
 
         //Adding the new clicked page to the array
-        pageArray.push($(this));
+        pageArray.push($(this).attr('id'));
         startOfArray = startOfArray + 1;
 
         //Changing the CSS of the clicked navigation to being clicked
-        pageArray[startOfArray].addClass("active");
+        $("#" + pageArray[startOfArray]).addClass("active");
 
         //Getting the html of the page that is selected, animating it and then storing the page
         //in the web browsers history
 
         pages.forEach(function(page){
-            if(page.Name == pageArray[startOfArray].attr('id')){
+            if(page.Name == pageArray[startOfArray]){
                 $("main").html(page.HTML);
 
                 if(page.Name == "home"){
@@ -85,12 +95,24 @@ $(document).ready(function(){
             }
         });
 
-        History.pushState({}, pageArray[startOfArray].attr('id'), $(pageArray[startOfArray]).find("a").attr('href'));
+        History.pushState({}, pageArray[startOfArray], $("#" + pageArray[startOfArray]).find("a").attr('href'));
 
     });
 
-    $(".videoRow").on("click", ".videoBox", function(event){
-        alert($(this).attr("id"));
+    $(".videoRow").on("click", ".videoBox", function(){
+
+        //Getting the room HTML
+        $.get('/rooms/view/' + $(this).attr("id"), function(room){
+            $("main").html($(room).find("main").html());
+        });
+
+        //Removing the selected navigation button
+        $(".buttonnav li").removeClass("active");
+
+        //Adding the current selected room to the history
+        History.pushState({}, "viewRoom", "/rooms/view/" + $(this).attr("id"));
+
+        loadVideo();
     });
 
     //This bind gets fired when there is a history change such as going forward or backwards in the history
@@ -121,6 +143,9 @@ $(document).ready(function(){
         $("#" + state.title).addClass("active");
     });
 
+    function loadVideo(){
+
+    }
 
     function displayRooms(){
         var roomhtml = "";
