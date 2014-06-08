@@ -58,6 +58,9 @@ $(document).ready(function(){
                 displayRooms();
         });
 
+        //Rebinding events on some pages
+        ReBindEvents(pageArray[startOfArray]);
+
         $("#" + pageArray[startOfArray]).addClass("active");
     }
 
@@ -95,24 +98,11 @@ $(document).ready(function(){
             }
         });
 
+        //Rebinding events on some pages
+        ReBindEvents(pageArray[startOfArray]);
+
         History.pushState({}, pageArray[startOfArray], $("#" + pageArray[startOfArray]).find("a").attr('href'));
 
-    });
-
-    $(".videoRow").on("click", ".videoBox", function(){
-
-        //Getting the room HTML
-        $.get('/rooms/view/' + $(this).attr("id"), function(room){
-            $("main").html($(room).find("main").html());
-        });
-
-        //Removing the selected navigation button
-        $(".buttonnav li").removeClass("active");
-
-        //Adding the current selected room to the history
-        History.pushState({}, "viewRoom", "/rooms/view/" + $(this).attr("id"));
-
-        loadVideo();
     });
 
     //This bind gets fired when there is a history change such as going forward or backwards in the history
@@ -134,6 +124,9 @@ $(document).ready(function(){
             }
         });
 
+        //Rebinding events on some pages
+        ReBindEvents(state.title);
+
         //Removing the last page from the array
         pageArray.shift();
         startOfArray = startOfArray - 1;
@@ -144,6 +137,35 @@ $(document).ready(function(){
     });
 
     function loadVideo(){
+        //Setting the video size before it is loaded
+        $("#player").attr("width", $("#playerBox").width());
+        $("#player").attr("height", $("#playerBox").height());
+
+        //Connecting to the websocket server
+        var socket = io.connect("http://chat.sharpframe.co.uk:8080");
+
+        //Setting up the video object
+        $("#player").mediaelementplayer({
+            success: function(mediaElement, domObject) {
+                if (mediaElement.pluginType == "flash") {
+                    mediaElement.addEventListener("canplay", function() {
+                        //mediaElement.setCurrentTime("20");
+                        // Player is ready
+                        mediaElement.play();
+                    }, false);
+                }
+            },
+            error: function() {
+                alert("Error");
+            }
+        });
+
+        socket.emit("ping", "");
+
+        socket.on("pong", function(){
+
+        });
+
 
     }
 
@@ -154,7 +176,7 @@ $(document).ready(function(){
             roomhtml += '<div class="videoBox" id="' + room._id + '">';
             roomhtml += '<article>';
             roomhtml += '<h4>' + room.title + '</h4>';
-            roomhtml += '<img src="/images/icons/' + room.icon + '" />';
+            roomhtml += '<img src="/uploads/icons/' + room.icon + '" />';
             roomhtml += '</article>';
             roomhtml += '</div>';
         });
@@ -162,33 +184,64 @@ $(document).ready(function(){
         $(".videoRow").html(roomhtml);
     }
 
-    $('.input-group input[required], .input-group textarea[required], .input-group select[required]').on('keyup, change', function() {
-        var $group = $(this).closest('.input-group'),
-            $addon = $group.find('.input-group-addon'),
-            $icon = $addon.find('span'),
-            state = false;
-
-        if (!$group.data('validate')) {
-            state = $(this).val() ? true : false;
-        }else if ($group.data('validate') == "email") {
-            state = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test($(this).val())
-        }else if($group.data('validate') == 'phone') {
-            state = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/.test($(this).val())
-        }else if ($group.data('validate') == "length") {
-            state = $(this).val().length >= $group.data('length') ? true : false;
-        }else if ($group.data('validate') == "number") {
-            state = !isNaN(parseFloat($(this).val())) && isFinite($(this).val());
-        }else if ($group.data('validate') == "date") {
-            state = /^\d{4}-\d{1,2}-\d{1,2}$/.test($(this).val())
+    function ReBindEvents(pagename){
+        switch(pagename){
+            case 'register' :
+                RegisterValidation();
+                break;
+            case 'home' :
+                VideoClick();
+                break;
         }
+    }
 
-        if (state) {
-            $addon.removeClass('danger');
-            $addon.addClass('success');
-        }else{
-            $addon.removeClass('success');
-            $addon.addClass('danger');
-        }
-    });
+    function RegisterValidation(){
+        $('.input-group input[required], .input-group textarea[required], .input-group select[required]').on('keyup, change', function() {
+            var $group = $(this).closest('.input-group'),
+                $addon = $group.find('.input-group-addon'),
+                $icon = $addon.find('span'),
+                state = false;
+
+            if (!$group.data('validate')) {
+                state = $(this).val() ? true : false;
+            }else if ($group.data('validate') == "email") {
+                state = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test($(this).val())
+            }else if($group.data('validate') == 'phone') {
+                state = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/.test($(this).val())
+            }else if ($group.data('validate') == "length") {
+                state = $(this).val().length >= $group.data('length') ? true : false;
+            }else if ($group.data('validate') == "number") {
+                state = !isNaN(parseFloat($(this).val())) && isFinite($(this).val());
+            }else if ($group.data('validate') == "date") {
+                state = /^\d{4}-\d{1,2}-\d{1,2}$/.test($(this).val())
+            }
+
+            if (state) {
+                $addon.removeClass('danger');
+                $addon.addClass('success');
+            }else{
+                $addon.removeClass('success');
+                $addon.addClass('danger');
+            }
+        });
+    }
+
+    function VideoClick(){
+        $(".videoRow").on("click", ".videoBox", function(){
+
+            //Getting the room HTML
+            $.get('/rooms/view/' + $(this).attr("id"), function(room){
+                $("main").html($(room).find("main").html());
+            });
+
+            //Removing the selected navigation button
+            $(".buttonnav li").removeClass("active");
+
+            //Adding the current selected room to the history
+            History.pushState({}, "viewRoom", "/rooms/view/" + $(this).attr("id"));
+
+            loadVideo();
+        });
+    }
 });
 
