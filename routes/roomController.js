@@ -15,7 +15,18 @@ exports.register = function(req, res){
  */
 
 exports.view = function(req, res){
-    res.render('room-view', { title: 'Welcome to ' + req.params.id });
+    var roomCollection = db.get("rooms");
+
+    roomCollection.find({_id : req.params.id},{},function(e, docs){
+        var room = docs[0];
+
+        var videoCollection = db.get("videos");
+
+        videoCollection.find({roomid : String(room._id), isplaying : 1, hidden : 0},{},function(e, docs){
+            console.log(room._id);
+            res.render('room-view', { title: 'Room', room : room, video : docs[0]});
+        });
+    })
 };
 
 /*
