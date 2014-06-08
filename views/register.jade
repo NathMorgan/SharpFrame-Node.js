@@ -2,3 +2,35 @@ extends layout
 
 block content
     main(role="main")
+        .row
+            h2 Register new account
+            .row
+                .col-sm-offset-4.col-sm-4
+                    form(method='post')
+                        .form-group
+                            label(for='username') Username
+                            .input-group
+                                input#validate-text.form-control(type='text', name='username', placeholder='Enter Username', required='required')
+                                span.input-group-addon
+                        .form-group
+                            label(for='password') Password
+                            .input-group
+                                input#validate-text.form-control(type='password', name='password', placeholder='Enter password', required='required')
+                                span.input-group-addon
+                        .form-group
+                            label(for='password') Re-enter Password
+                            .input-group
+                                input#validate-text.form-control(type='password', name='repassword', placeholder='Re-enter password', required='required')
+                                span.input-group-addon
+                        .form-group
+                            label(for='email') Email
+                            .input-group(data-validate='email')
+                                input#validate-email.form-control(type='text', name='email', placeholder='Enter Email (joe@example.com)', required='required')
+                                span.input-group-addon
+                        .form-group
+                            label(for='email') Date Of Birth
+                            .input-group(data-validate='date')
+                                input#validate-date.form-control(type='date', name='dateofbirth', placeholder='Enter your date of birth (DD/MM/YYYY)', required='required')
+                                span.input-group-addon
+                        .form-group
+                            button.btn.btn-primary Create Account
