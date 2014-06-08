@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    main(role="main")
+        #roomTitle=room.title
+        #chatBox
+            |Chatbox
+        #playerBox
+            video(id="player",preload="none")
+                source(type="video/youtube", src="http://www.youtube.com/watch?v=2ocL9V7-BZw")
+
+        #videoSettings
+
+
+        #chatInput
+            |Chatinput
