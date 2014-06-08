@@ -26,6 +26,7 @@ body {
 
 #sharpframelogo img{
   width: 200px;
+  float: left;
 }
 
 .nav-justified {
@@ -94,6 +95,20 @@ body {
   }
 }
 
+@media screen and (max-width: 767px) {
+  .form-control{
+    display: inline;
+  }
+
+  .buttonnav{
+    margin-top: 100px !important;
+  }
+
+  .btn{
+    width: 100%;
+  }
+}
+
 .videoRow{
   text-align: left;
 }
@@ -118,4 +133,83 @@ body {
 .videoBox img {
   width: 150px;
   height: 150px;
+}
+
+.buttonnav{
+  margin-top: 10px;
+}
+
+#username, #password {
+  margin-right: 10px;
+}
+
+.clrfloats{
+  clear: both;
+}
+
+#roomTitle{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#playerBox{
+  background-image: url("/images/sharpframe-logo.png");
+  background-size: 50% 85%;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 2px solid black;
+  width: 770px;
+  height: 464px;
+  float: left;
+}
+
+#videoSettings{
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
+  width: 770px;
+  height: 40px;
+  float: left;
+}
+
+#chatBox{
+  float: right;
+  width: 350px;
+  height: 464px;
+  border: 2px solid black;
+}
+
+#chatInput{
+  float: right;
+  width: 350px;
+  height: 40px;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
+}
+
+.input-group-addon.primary {
+  color: rgb(255, 255, 255);
+  background-color: rgb(50, 118, 177);
+  border-color: rgb(40, 94, 142);
+}
+.input-group-addon.success {
+  color: rgb(255, 255, 255);
+  background-color: rgb(92, 184, 92);
+  border-color: rgb(76, 174, 76);
+}
+.input-group-addon.info {
+  color: rgb(255, 255, 255);
+  background-color: rgb(57, 179, 215);
+  border-color: rgb(38, 154, 188);
+}
+.input-group-addon.warning {
+  color: rgb(255, 255, 255);
+  background-color: rgb(240, 173, 78);
+  border-color: rgb(238, 162, 54);
+}
+.input-group-addon.danger {
+  color: rgb(255, 255, 255);
+  background-color: rgb(217, 83, 79);
+  border-color: rgb(212, 63, 58);
 }
